@@ -94,7 +94,7 @@ var config = {
         extensions: ['', '.js', '.jsx','.less','.css','.png','.jpg','.html'],
         alias:{
             // 设置公共组件的文件位置，方便webpack检索，优化编译时间
-            'jquery':path.join(nodeModulesPath,'/jquery/dist/jquery.min.js')
+            // 'jquery':path.join(nodeModulesPath,'/jquery/dist/jquery.min.js')
         }
     },
     // cache:true,

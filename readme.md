@@ -1,6 +1,6 @@
-front-generator
+front-generator-react
 =============
-best FE generator in my mind with webpack,less,babel
+best FE generator in my mind with webpack,less,babel,react
 
 ## 使用
 <pre><code class="cli">//启动本地热替换调试服务器,地址：http://localhost:6066/html/
@@ -65,7 +65,6 @@ npm run dist
 └── webpack.config.js
 
 ## todo
-<del>1、html修改后需要手动刷新，webpack没有太好的办法处理</del>
 
 ### 脚手架不可能完全适合自己，开发者必须要有一定的框架设计能力
 
