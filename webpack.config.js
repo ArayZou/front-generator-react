@@ -1,7 +1,6 @@
 var path = require('path');
 var glob = require('glob');
 var webpack = require('webpack');
-var HappyPack = require('happypack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin;
@@ -20,6 +19,7 @@ if(debug){
         entries[i].unshift('webpack-dev-server/client?http://localhost:' + devPort, "webpack/hot/dev-server");
     }
 }
+entries.common=['react','react-dom','jquery'];
 
 var config = {
     entry: entries,
@@ -42,7 +42,8 @@ var config = {
                 exclude: /node_modules/, //排除编译node_modules
                 query: {
                     presets: ['react', 'stage-0', 'es2015'],
-                    plugins: ["transform-object-rest-spread", "transform-object-assign"]
+                    plugins: ["transform-object-rest-spread", "transform-object-assign"],
+                    cacheDirectory: true
                 }
             },{
                 test: /\.html$/,
@@ -53,7 +54,7 @@ var config = {
                 loader: 'file-loader?name=fonts/[name].[ext]'
             }, {
                 test: /\.(png|jpe?g|gif)$/,
-                loader: 'url-loader?limit=2048&name=img/[name]-[hash].[ext]'
+                loader: 'url-loader?limit=8168&name=img/[name]-[hash].[ext]'
             }
         ]
     },
@@ -69,8 +70,18 @@ var config = {
         ];
     },
     plugins: [
+        new webpack.DefinePlugin({
+            'process.env':{
+                'NODE_ENV': JSON.stringify('production')
+            }
+        }),
         //热替换
         new webpack.HotModuleReplacementPlugin(),
+        new webpack.ProvidePlugin({
+            $: "jquery",
+            jQuery: "jquery",
+            "window.jQuery": "jquery"
+        }),
         new CommonsChunkPlugin({
             // CommonsChunkPlugin自动检查entries里的公共组件包括js和less，生成common.js和common.css
             name: "common", // 将公共模块提取，生成名为`common`的chunk
@@ -95,10 +106,10 @@ var config = {
         extensions: ['', '.js', '.jsx','.less','.css','.png','.jpg','.html'],
         alias:{
             // 设置公共组件的文件位置，方便webpack检索，优化编译时间
-            // 'jquery':path.join(nodeModulesPath,'/jquery/dist/jquery.min.js')
+            'jquery':path.join(nodeModulesPath,'/jquery/dist/jquery.js')
         }
     },
-    // cache:true,
+    cache:true,
     devServer: {
         inline:true,
         contentBase: "./dist",
@@ -117,7 +128,7 @@ pages.forEach(function(pathname) {
         inject: false,    //js插入的位置，true/'head'/'body'/false
     };
     if (pathname in config.entry) {
-        conf.favicon = 'src/img/favicon.ico';
+        // conf.favicon = 'src/img/favicon.ico';
         conf.inject = 'body';
         conf.chunks = ['common', pathname];
         conf.hash = true;
